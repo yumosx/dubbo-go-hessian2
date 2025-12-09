@@ -48,7 +48,8 @@ func TestMultipleLevelRecursiveDep(t *testing.T) {
 	decoded := fmt.Sprintf("%v", obj)
 
 	if decoded != origin {
-		t.Errorf("deserialize mismatched, origin: %s, decoded: %s", origin[:100], decoded[:100])
+		//avoid ci fail, not print all data
+		t.Fatalf("deserialize mismatched")
 	}
 }
 

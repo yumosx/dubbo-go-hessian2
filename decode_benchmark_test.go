@@ -43,11 +43,12 @@ func TestMultipleLevelRecursiveDep(t *testing.T) {
 		panic(err)
 	}
 
+	// Use fmt.Sprintf to compare, but ensure the random seed is fixed
 	origin := fmt.Sprintf("%v", data)
 	decoded := fmt.Sprintf("%v", obj)
 
 	if decoded != origin {
-		t.Errorf("deserialize mismatched, origin: %s, decoded: %s", origin, decoded)
+		t.Errorf("deserialize mismatched, origin: %s, decoded: %s", origin[:100], decoded[:100])
 	}
 }
 

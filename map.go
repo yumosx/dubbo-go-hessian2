@@ -276,18 +276,7 @@ func (d *Decoder) decMap(flag int32) (interface{}, error) {
 
 		d.appendRefs(instValue)
 
-		for {
-			// Check if we've reached the end by reading the next byte
-			nextByte, err := d.ReadByte()
-			if err != nil {
-				return nil, perrors.WithStack(err)
-			}
-			if nextByte == BC_END {
-				break
-			}
-			// Put the byte back since it's not the end
-			d.reader.UnreadByte()
-
+		for d.peekByte() != BC_END {
 			k, err = d.Decode()
 			if err != nil {
 				return nil, err
@@ -310,22 +299,15 @@ func (d *Decoder) decMap(flag int32) (interface{}, error) {
 				}
 			}
 		}
+		_, err = d.ReadByte()
+		if err != nil {
+			return nil, perrors.WithStack(err)
+		}
 		return instValue.Interface(), nil
 	case BC_MAP_UNTYPED:
 		m = make(map[interface{}]interface{})
 		d.appendRefs(m)
-		for {
-			// Check if we've reached the end by reading the next byte
-			nextByte, err := d.ReadByte()
-			if err != nil {
-				return nil, perrors.WithStack(err)
-			}
-			if nextByte == BC_END {
-				break
-			}
-			// Put the byte back since it's not the end
-			d.reader.UnreadByte()
-
+		for d.peekByte() != BC_END {
 			k, err = d.Decode()
 			if err != nil {
 				return nil, err
@@ -335,6 +317,10 @@ func (d *Decoder) decMap(flag int32) (interface{}, error) {
 				return nil, err
 			}
 			m[k] = v
+		}
+		_, err = d.ReadByte()
+		if err != nil {
+			return nil, perrors.WithStack(err)
 		}
 		return m, nil
 

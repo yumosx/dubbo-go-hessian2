@@ -78,9 +78,14 @@ func TestMultipleLevelRecursiveDep2(t *testing.T) {
 	rt := time.Since(now)
 	fmt.Printf("hessian2 deserialize %s\n", rt)
 
-	if rt > 1*time.Second {
-		t.Fatal("deserialize too slow")
+	timeoutThreshold := 1 * time.Second
+	if rt > timeoutThreshold {
+		t.Errorf("deserialize too slow: actual=%v, threshold=%v", rt, timeoutThreshold)
 	}
+
+	// Log the performance metrics for debugging and monitoring
+	t.Logf("Deserialization performance: size=%dKB, time=%v, throughput=%dKB/s",
+		len(bytes)/1024, rt, int64(len(bytes))/rt.Milliseconds()*1000/1024)
 	// For this test, we only care about performance, not exact equality
 	// The equality check is in TestMultipleLevelRecursiveDep
 	_ = obj

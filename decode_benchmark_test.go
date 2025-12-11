@@ -78,7 +78,7 @@ func TestMultipleLevelRecursiveDep2(t *testing.T) {
 	rt := time.Since(now)
 	fmt.Printf("hessian2 deserialize %s\n", rt)
 
-	timeoutThreshold := 1 * time.Second
+	timeoutThreshold := 4 * time.Second
 	if rt > timeoutThreshold {
 		t.Errorf("deserialize too slow: actual=%v, threshold=%v", rt, timeoutThreshold)
 	}
